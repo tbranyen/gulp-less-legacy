@@ -1,16 +1,15 @@
 var path           = require('path');
-var accord         = require('accord');
 var through2       = require('through2');
 var gutil          = require('gulp-util');
 var assign         = require('object-assign');
 var applySourceMap = require('vinyl-sourcemaps-apply');
 
 var PluginError    = gutil.PluginError;
-var less           = accord.load('less');
+var less           = require('less');
 
 module.exports = function (options) {
   // Mixes in default options.
-  opts = assign({}, {
+  options = assign({}, {
       compress: false,
       paths: []
     }, options);
@@ -26,36 +25,28 @@ module.exports = function (options) {
 
     var str = file.contents.toString();
 
+    // Clones the options object
+    var opts = assign({}, options);
+
     // Injects the path of the current file
     opts.filename = file.path;
 
-    // Bootstrap source maps
-    if (file.sourceMap) {
-      opts.sourcemap = true;
-    }
+    less.render(str, opts, function(err, result) {
+      if (err) {
+        // Convert the keys so PluginError can read them
+        err.lineNumber = err.line;
+        err.fileName = err.filename;
 
-    less.render(str, opts).then(function(res) {
-      file.contents = new Buffer(res.result);
-      file.path = gutil.replaceExtension(file.path, '.css');
-      if (res.sourcemap) {
-        res.sourcemap.file = file.relative;
-        res.sourcemap.sources = res.sourcemap.sources.map(function (source) {
-          return path.relative(file.base, source);
-        });
+        // Add a better error message
+        err.message = err.message + ' in file ' + err.fileName + ' line no. ' + err.lineNumber;
 
-        applySourceMap(file, res.sourcemap);
+        throw new PluginError('gulp-less', err);
       }
-      return file;
-    }).then(function(file) {
-      cb(null, file);
-    }).catch(function(err) {
-      // Convert the keys so PluginError can read them
-      err.lineNumber = err.line;
-      err.fileName = err.filename;
 
-      // Add a better error message
-      err.message = err.message + ' in file ' + err.fileName + ' line no. ' + err.lineNumber;
-      return cb(new PluginError('gulp-less', err));
+      file.contents = new Buffer(result);
+      file.path = gutil.replaceExtension(file.path, '.css');
+
+      cb(null, file);
     });
   });
 };

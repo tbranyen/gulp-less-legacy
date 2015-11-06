@@ -1,5 +1,5 @@
-gulp-less
-=========
+gulp-less-legacy
+================
 
 A LESS plugin for Gulp
 
@@ -9,13 +9,13 @@ A LESS plugin for Gulp
 ## Installation
 
 ```
-npm install gulp-less
+npm install gulp-less-legacy
 ```
 
 ## Basic Usage
 
 ```js
-var less = require('gulp-less');
+var less = require('gulp-less-legacy');
 var path = require('path');
 
 gulp.task('less', function () {
@@ -81,32 +81,6 @@ gulp.src('./less/**/*.less')
 
 More info on LESS plugins can be found at http://lesscss.org/usage/#plugins, including a current list of all available plugins.
 
-## Source Maps
-
-`gulp-less` can be used in tandem with [gulp-sourcemaps](https://github.com/floridoo/gulp-sourcemaps) to generate source maps for your files. You will need to initialize [gulp-sourcemaps](https://github.com/floridoo/gulp-sourcemaps) prior to running the gulp-less compiler and write the source maps after, as such:
-
-```js
-var sourcemaps = require('gulp-sourcemaps');
-
-gulp.src('./less/**/*.less')
-  .pipe(sourcemaps.init())
-  .pipe(less())
-  .pipe(sourcemaps.write())
-  .pipe(gulp.dest('./public/css'));
-```
-
-By default, [gulp-sourcemaps](https://github.com/floridoo/gulp-sourcemaps) writes the source maps inline in the compiled CSS files. To write them to a separate file, specify a relative file path in the `sourcemaps.write()` function, as such:
-
-```js
-var sourcemaps = require('gulp-sourcemaps');
-
-gulp.src('./less/**/*.less')
-  .pipe(sourcemaps.init())
-  .pipe(less())
-  .pipe(sourcemaps.write('./maps'))
-  .pipe(gulp.dest('./public/css'));
-```
-
 ## Error Handling
 
 By default, a gulp task will fail and all streams will halt when an error happens. To change this behavior check out the error handling documentation [here](https://github.com/gulpjs/gulp/blob/master/docs/recipes/combining-streams-to-handle-errors.md)
@@ -115,7 +89,7 @@ By default, a gulp task will fail and all streams will halt when an error happen
 
 (MIT License)
 
-Copyright (c) 2015 Plus 3 Network dev@plus3network.com
+Copyright (c) 2015 Plus 3 Network dev@plus3network.com, Tim Branyen
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
 
